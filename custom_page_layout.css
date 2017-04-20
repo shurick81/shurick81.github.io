@@ -6,7 +6,7 @@
 }
 .section-wrapper
 {
-    text-align: middle;
+    text-align: center;
 }
 .photo-border
 {
@@ -14,6 +14,8 @@
     height: 200px;
     overflow: hidden;
     border-radius: 50%;
+    margin-left: auto;
+    margin-right: auto;
 }
 .photo
 {
