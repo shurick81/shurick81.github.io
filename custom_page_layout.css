@@ -4,6 +4,10 @@
     margin-left: auto;
     margin-right: auto;
 }
+.section-wrapper
+{
+    text-align: middle;
+}
 .photo-border
 {
     width: 200px;
