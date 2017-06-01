@@ -1,8 +1,8 @@
 {
-  "main.css": "static/css/main.911129aa.css",
-  "main.css.map": "static/css/main.911129aa.css.map",
-  "main.js": "static/js/main.dd855f6f.js",
-  "main.js.map": "static/js/main.dd855f6f.js.map",
+  "main.css": "static/css/main.0b0ba166.css",
+  "main.css.map": "static/css/main.0b0ba166.css.map",
+  "main.js": "static/js/main.17a99ed1.js",
+  "main.js.map": "static/js/main.17a99ed1.js.map",
   "static\\media\\MCSE_SharePoint_Blk.png": "static/media/MCSE_SharePoint_Blk.d2dfc4df.png",
   "static\\media\\SPNews-big.jpg": "static/media/SPNews-big.b1a01eb9.jpg",
   "static\\media\\TCIntraFull.png": "static/media/TCIntraFull.08d69173.png",
@@ -25,6 +25,7 @@
   "static\\media\\inferno-big.jpg": "static/media/inferno-big.1f91c7a2.jpg",
   "static\\media\\intranetFull.png": "static/media/intranetFull.5218fca3.png",
   "static\\media\\intranetThumb.png": "static/media/intranetThumb.b2c851f1.png",
+  "static\\media\\itakalogo.png": "static/media/itakalogo.9eb69e58.png",
   "static\\media\\lentalogo.png": "static/media/lentalogo.5e2f7983.png",
   "static\\media\\longterm-orig.jpg": "static/media/longterm-orig.f5252999.jpg",
   "static\\media\\machineworkThumb.jpg": "static/media/machineworkThumb.8b3f0fb2.jpg",
@@ -35,11 +36,14 @@
   "static\\media\\persona-small.jpg": "static/media/persona-small.25438c7c.jpg",
   "static\\media\\provisioningcodeFull.png": "static/media/provisioningcodeFull.65eb25cf.png",
   "static\\media\\provisioningcodeThumb.png": "static/media/provisioningcodeThumb.11179edd.png",
+  "static\\media\\rosvodokanallogo.png": "static/media/rosvodokanallogo.329c0c10.png",
   "static\\media\\scrumThumb.png": "static/media/scrumThumb.4bc283fc.png",
   "static\\media\\selectserviceThumb.jpg": "static/media/selectserviceThumb.853e501d.jpg",
   "static\\media\\sevminbrandingFull.png": "static/media/sevminbrandingFull.47baba70.png",
   "static\\media\\sevminbrandingThumb.jpg": "static/media/sevminbrandingThumb.dad3da96.jpg",
   "static\\media\\sevminbrandingThumb.png": "static/media/sevminbrandingThumb.47baba70.png",
   "static\\media\\swayprojectThumb.png": "static/media/swayprojectThumb.cf203fcb.png",
-  "static\\media\\typing-big.jpg": "static/media/typing-big.7acdec87.jpg"
+  "static\\media\\transpetroleumlogo.jpg": "static/media/transpetroleumlogo.b21afb84.jpg",
+  "static\\media\\typing-big.jpg": "static/media/typing-big.7acdec87.jpg",
+  "static\\media\\yvesrocherlogo.png": "static/media/yvesrocherlogo.9e0aa442.png"
 }
