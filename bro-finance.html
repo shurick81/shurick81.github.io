@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Resultaträkning — Treemap</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f0f2f5;
+      padding: 24px;
+    }
+    header { margin-bottom: 20px; }
+    header h1 { font-size: 1.4rem; font-weight: 700; color: #1a1a2e; }
+    header p  { font-size: 0.85rem; color: #888; margin-top: 4px; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stat {
+      background: white;
+      border-radius: 10px;
+      padding: 16px 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    }
+    .stat-label {
+      font-size: 0.72rem;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+    .stat-value { font-size: 1.6rem; font-weight: 700; color: #1a1a2e; }
+    .stat-value.negative { color: #e74c3c; }
+    .stat-value.positive { color: #27ae60; }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    }
+    .card-title {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 4px;
+    }
+    #chart { width: 100%; height: 580px; }
+    .hint { text-align: center; margin-top: 10px; font-size: 0.78rem; color: #bbb; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Resultaträkning</h1>
+  <p>Values in SEK</p>
+</header>
+
+<div class="stats">
+  <div class="stat">
+    <div class="stat-label">Totala intäkter</div>
+    <div class="stat-value positive" id="s-income">—</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Totala kostnader</div>
+    <div class="stat-value" id="s-costs">—</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Nettoresultat</div>
+    <div class="stat-value" id="s-net">—</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">Klicka på Driftkostnader för att zooma in — breadcrumb för att gå tillbaka</div>
+  <div id="chart"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script>
+
+// ── Formatting ────────────────────────────────────────────────────────────────
+const fmtLong  = v => v >= 1e6
+  ? (v / 1e6).toFixed(2) + ' M SEK'
+  : v >= 1e3 ? (v / 1e3).toFixed(0) + ' k SEK'
+  : v.toLocaleString('sv-SE') + ' SEK';
+
+const fmtShort = v => v >= 1e6
+  ? (v / 1e6).toFixed(2) + ' M'
+  : v >= 1e3 ? (v / 1e3).toFixed(0) + ' k'
+  : v.toLocaleString('sv-SE');
+
+// ── Data ──────────────────────────────────────────────────────────────────────
+const data = [
+  {
+    name: 'Intäkter',
+    children: [
+      { name: 'Nettoomsättning',       value: 49194715, itemStyle: { color: '#2563eb' } },
+      { name: 'Övr. rörelseintäkter',  value: 183452,   itemStyle: { color: '#60a5fa' } },
+      { name: 'Ränteintäkter',         value: 25698,    itemStyle: { color: '#93c5fd' } },
+    ]
+  },
+  {
+    name: 'Kostnader',
+    children: [
+      {
+        name: 'Driftkostnader',
+        itemStyle: { color: '#dc2626' },
+        children: [
+          { name: 'Uppvärmning',             value: 7466635 },
+          { name: 'Reparationer',            value: 4867410 },
+          { name: 'Vatten',                  value: 3953695 },
+          { name: 'Underhåll',               value: 3843448 },
+          { name: 'El',                      value: 2144962 },
+          { name: 'Förvaltningsavtal',       value: 1958954 },
+          { name: 'Sophämtning',             value: 1705457 },
+          { name: 'Försäkringspremie',       value: 1273344 },
+          { name: 'Tillsyn & besiktning',    value: 1233652 },
+          { name: 'Snöröjning',              value: 1180297 },
+          { name: 'Trädgårdsskötsel',        value: 1071945 },
+          { name: 'Kabel-tv/Bredband/IT',    value: 1016819 },
+          { name: 'Fastighetsavgift',        value: 999190  },
+          { name: 'Fastighetsskötsel',       value: 752895  },
+          { name: 'Städning',               value: 708917  },
+          { name: 'Fastighetsskatt',        value: 136500  },
+          { name: 'Hisstillsyn',             value: 47030   },
+        ]
+      },
+      { name: 'Avskrivningar',          value: 9406248, itemStyle: { color: '#ea580c' } },
+      { name: 'Räntekostnader',         value: 4230005, itemStyle: { color: '#b91c1c' } },
+      {
+        name: 'Övr. externa kostnader',
+        itemStyle: { color: '#f97316' },
+        children: [
+          { name: 'Administrationskostnader',             value: 407481 },
+          { name: 'Övriga förvaltningskostnader',         value: 214680 },
+          { name: 'Underhållsplan',                       value: 122500 },
+          { name: 'Hyror och leasing',                    value: 96690  },
+          { name: 'Medlemsavgifter',                      value: 93287  },
+          { name: 'Revisionsarvode',                      value: 59427  },
+          { name: 'Förbrukningsinventarier & varuinköp',  value: 62887  },
+          { name: 'Konsultkostnader',                     value: 37990  },
+        ]
+      },
+      {
+        name: 'Personalkostnader',
+        itemStyle: { color: '#d97706' },
+        children: [
+          { name: 'Styrelsearvoden', value: 644625 },
+          { name: 'Sociala kostnader', value: 192785 },
+          { name: 'Övriga arvoden',  value: 58005  },
+        ]
+      },
+    ]
+  }
+];
+
+// ── Stats ─────────────────────────────────────────────────────────────────────
+const sumChildren = nodes => nodes.reduce((s, n) =>
+  s + (n.value ?? n.children.reduce((a, c) => a + c.value, 0)), 0);
+
+const income = sumChildren(data[0].children);
+const costs  = sumChildren(data[1].children);
+const net    = income - costs;
+
+document.getElementById('s-income').textContent = fmtShort(income);
+document.getElementById('s-costs').textContent  = fmtShort(costs);
+const netEl = document.getElementById('s-net');
+netEl.textContent = (net < 0 ? '−' : '+') + fmtShort(Math.abs(net));
+netEl.className = 'stat-value ' + (net < 0 ? 'negative' : 'positive');
+
+// ── Chart ─────────────────────────────────────────────────────────────────────
+const chart = echarts.init(document.getElementById('chart'));
+
+chart.setOption({
+  tooltip: {
+    formatter: info => {
+      const path = info.treePathInfo.map(n => n.name).filter(Boolean).join(' › ');
+      return `<b>${path}</b><br/>${fmtLong(info.value)}`;
+    }
+  },
+  series: [{
+    type: 'treemap',
+    roam: false,
+    nodeClick: 'zoomToNode',
+    leafDepth: 2,
+    width: '100%',
+    height: '100%',
+
+    breadcrumb: {
+      show: true,
+      bottom: 4,
+      height: 26,
+      itemStyle: {
+        color: '#f3f4f6',
+        borderColor: '#d1d5db',
+        textStyle: { color: '#374151', fontWeight: '600', fontSize: 12 }
+      }
+    },
+
+    label: {
+      show: true,
+      formatter: p => `{n|${p.name}}\n{v|${fmtShort(p.value)}}`,
+      rich: {
+        n: { fontSize: 12, color: '#fff',                lineHeight: 16 },
+        v: { fontSize: 11, color: 'rgba(255,255,255,0.75)', lineHeight: 14 }
+      }
+    },
+
+    upperLabel: {
+      show: true,
+      height: 28,
+      fontSize: 13,
+      fontWeight: 'bold',
+      color: '#fff',
+      formatter: '{b}',
+    },
+
+    levels: [
+      {
+        // depth 0 — Intäkter / Kostnader (section bands)
+        itemStyle: { borderColor: '#e5e7eb', borderWidth: 4, gapWidth: 4 },
+        upperLabel: { show: true, height: 30 }
+      },
+      {
+        // depth 1 — Nettoomsättning, Driftkostnader, Avskrivningar …
+        itemStyle: { borderColor: 'rgba(255,255,255,0.35)', borderWidth: 2, gapWidth: 2 },
+        upperLabel: { show: true, height: 26 }
+      },
+      {
+        // depth 2 — Driftkostnader sub-items (visible after drill-down)
+        colorSaturation: [0.45, 0.85],
+        itemStyle: { borderColor: 'rgba(255,255,255,0.25)', borderWidth: 1, gapWidth: 1 }
+      }
+    ],
+
+    data
+  }]
+});
+
+window.addEventListener('resize', () => chart.resize());
+
+</script>
+</body>
+</html>
